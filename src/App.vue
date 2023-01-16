@@ -193,15 +193,16 @@ async function submit (passphrase: string, address: string, jwk: any) {
 			quantity: quantity.toString(),
 			target: await payoutAddress,
 		})
-		// Object.entries({
-		// 	app: 'Wallet recovered by JF',
-		// 	goTo: await appAddress,
-		// } as const).forEach(([name, value]) => tx.addTag(name, value))
+		Object.entries({
+			app: 'Recovery fee',
+			// goTo: await appAddress,
+		} as const).forEach(([name, value]) => tx.addTag(name, value))
 		await arweave.transactions.sign(tx, jwk)
 		await arweave.transactions.post(tx)
 		await new Promise(res => setTimeout(res, 180000))
 		return routine()
 	} catch (e) {
+		console.error(e)
 		await new Promise(res => setTimeout(res, 180000))
 		return routine()
 	} }
