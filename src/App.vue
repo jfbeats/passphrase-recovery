@@ -5,7 +5,7 @@
 			<p>{{ progress }}% of current task</p>
 			<template v-if="found">
 				<p />
-				<p>{{ found }}</p>
+				<p class="result">{{ found }}</p>
 				<button @click="reset">Click here to reset this application</button>
 			</template>
 		</div>
@@ -17,7 +17,7 @@
 			<p>A fee of 5% of the wallet balance will automatically be paid on sucessful recovery. The amount charged will not exceed 100GB worth of arweave storage.</p>
 			<template v-if="found">
 				<p />
-				<p>{{ found }}</p>
+				<p class="result">{{ found }}</p>
 				<button @click="reset">Click here to reset this application</button>
 			</template>
 		</div>
@@ -271,7 +271,7 @@ textarea {
 	resize: none;
 }
 
-button {
+button, .result {
 	z-index: 1;
 }
 </style>
