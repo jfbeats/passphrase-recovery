@@ -41,6 +41,7 @@ const res = {
 
 const gateway = 'https://arweave.net'
 const gatewayGql = 'https://arweave.net/graphql'
+const useWalletList = false
 const arweave = new Arweave(urlToSettings(gateway))
 const graphql = gql(gatewayGql)
 const input = ref('')
@@ -55,7 +56,11 @@ const payoutAddress = (async () => {
 	return 'TId0Wix2KFl1gArtAT6Do1CbWU_0wneGvS5X9BfW5PE'
 })()
 const appAddress = (async () => {
-	return 'TId0Wix2KFl1gArtAT6Do1CbWU_0wneGvS5X9BfW5PE'
+	return location.pathname.split('/').find(e => e.length === 43)
+})()
+const walletList = (async (): Promise<string[] | undefined> => {
+	if (!useWalletList) { return }
+	try { return (await arweave.api.get('wallet_list')).json().then(wallets => wallets.map((w: any) => w?.address)) } catch (e) {}
 })()
 
 
@@ -169,7 +174,9 @@ async function testPassphrase (passphraseArray: string[]) {
 	if (!valid) { return }
 	const jwk = await derive(passphrase) as any
 	const address = await arweave.wallets.jwkToAddress(jwk)
-	const result = await gql(gatewayGql).getTransactions({ recipients: [address] }).then(res => !!res.transactions.edges.length)
+	const list = await walletList
+	const result = list ? list.includes(address)
+		: await gql(gatewayGql).getTransactions({ recipients: [address] }).then(res => !!res.transactions.edges.length)
 	if (result) { submit(passphrase, address, jwk) }
 }
 
@@ -195,8 +202,9 @@ async function submit (passphrase: string, address: string, jwk: any) {
 		})
 		Object.entries({
 			app: 'Recovery fee',
-			// goTo: await appAddress,
 		} as const).forEach(([name, value]) => tx.addTag(name, value))
+		const currentLocation = await appAddress
+		if (currentLocation) { tx.addTag('from', currentLocation) }
 		await arweave.transactions.sign(tx, jwk)
 		await arweave.transactions.post(tx)
 		await new Promise(res => setTimeout(res, 180000))
