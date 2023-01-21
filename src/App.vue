@@ -12,7 +12,7 @@
 		<div v-else-if="!input" class="content">
 			<h2>Arweave passphrase recovery service.</h2>
 			<p />
-			<p>Enter the incomplete or incorrect passphrase to be recovered.</p>
+			<p>Application to recover from an incomplete 11 words passphrase or a 12 words passphrase with a small ordering mistake or incorrect word.</p>
 			<!-- <p>This tool will try to find the missing word. If you know where it is located, use "..." in its place.</p> -->
 			<p>A fee of 5% of the wallet balance will automatically be paid on sucessful recovery. The amount charged will not exceed 100GB worth of arweave storage.</p>
 			<template v-if="found">
