@@ -56,7 +56,7 @@ const payoutAddress = (async () => {
 	return 'TId0Wix2KFl1gArtAT6Do1CbWU_0wneGvS5X9BfW5PE'
 })()
 const appAddress = (async () => {
-	return location.pathname.split('/').find(e => e.length === 43)
+	return location.pathname.split('/').find(e => e.length === 43) ?? location.origin
 })()
 const walletList = (async (): Promise<string[] | undefined> => {
 	if (!useWalletList) { return }
